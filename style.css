@@ -150,3 +150,17 @@ main { max-width: 980px; margin: 0 auto; padding: 0 16px 40px; }
   .srange input { width: 110px; }
 }
 .scene { scroll-margin-top: 70px; }
+
+.schallenge { padding: 12px 14px; border-top: 1px solid var(--line); background: linear-gradient(90deg, rgba(255, 184, 77, .10), transparent); }
+.schallenge[hidden] { display: none; }
+.chead2 { display: flex; align-items: center; gap: 12px; flex-wrap: wrap; }
+.sbtn.chal { background: var(--amber); color: #2a1a00; border-color: var(--amber); font-weight: 700; }
+.cscore { color: var(--mute); font-size: 14px; }
+.cask { margin-top: 8px; font-weight: 600; }
+.cask:empty, .copts:empty { display: none; }
+.copts { display: flex; gap: 8px; margin-top: 8px; flex-wrap: wrap; }
+.copt { min-width: 56px; padding: 8px 16px; border-radius: 10px; border: 1px solid #3a4d78; background: #22304f; color: var(--text); font: 700 18px var(--mono); }
+.copt:hover:not(:disabled) { border-color: var(--amber); }
+.copt.picked { border-color: var(--amber); }
+.copt.right { background: var(--green); color: #05290f; border-color: var(--green); opacity: 1; }
+.copt.wrong { background: var(--red); color: #2a0505; border-color: var(--red); opacity: 1; }

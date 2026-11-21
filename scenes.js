@@ -187,7 +187,7 @@ function createStage(el, { cam = [0, 4.2, 10], target = [0, 1.2, 0], fitWidth = 
 }
 
 // ---------- HTML controls under the scene ----------
-function makeUI(bar, codeEl, statusEl) {
+function makeUI(bar, codeEl, statusEl, chalEl) {
   let busy = false;
   const btns = [];
   const ui = {
@@ -235,6 +235,50 @@ function makeUI(bar, codeEl, statusEl) {
       return (i) => spans.forEach((s, k) => s.classList.toggle("hi", k === i || (Array.isArray(i) && i.includes(k))));
     },
     say(t, kind = "") { statusEl.textContent = t; statusEl.className = "sstatus " + kind; },
+    // Challenge mode: make() sets up a question in the scene and returns
+    // {ask, options, play: async () => answer, why: (answer) => text}. The scene itself then shows the answer.
+    challenge(make) {
+      chalEl.hidden = false;
+      let streak = 0, best = 0, total = 0, right = 0;
+      const head = document.createElement("div");
+      head.className = "chead2";
+      const start = document.createElement("button");
+      start.type = "button"; start.className = "sbtn chal"; start.textContent = "🎯 挑战：先猜再放";
+      const score = document.createElement("span");
+      score.className = "cscore";
+      head.append(start, score);
+      const ask = document.createElement("div"); ask.className = "cask";
+      const opts = document.createElement("div"); opts.className = "copts";
+      chalEl.append(head, ask, opts);
+      const paint = () => { score.textContent = total ? `答对 ${right}/${total} · 连对 ${streak}${best > 1 ? ` · 最高连对 ${best}` : ""}` : "先猜，再看 3D 演示对不对"; };
+      paint();
+      start.onclick = () => ui.run(async () => {
+        const q = make();
+        ask.textContent = q.ask;
+        opts.innerHTML = "";
+        ui.say("先在下面选你的答案，再看球怎么走。");
+        start.textContent = "🎯 换一题";
+        q.options.forEach((o) => {
+          const b = document.createElement("button");
+          b.type = "button"; b.className = "copt"; b.textContent = o;
+          b.onclick = () => ui.run(async () => {
+            opts.querySelectorAll("button").forEach((x) => (x.disabled = true));
+            b.classList.add("picked");
+            const ans = String(await q.play());
+            const ok = ans === o;
+            total++;
+            if (ok) { right++; streak++; best = Math.max(best, streak); } else streak = 0;
+            opts.querySelectorAll("button").forEach((x) => { if (x.textContent === ans) x.classList.add("right"); });
+            if (!ok) b.classList.add("wrong");
+            ui.say(`${ok ? "✓ 猜对了！" : `✗ 你选了 ${o}，答案是 ${ans}。`}${q.why(ans)}`, ok ? "ok" : "bad");
+            paint();
+            start.textContent = "🎯 下一题";
+          });
+          opts.appendChild(b);
+        });
+      });
+      btns.push(start);
+    },
     async run(fn) {
       if (busy) return;
       busy = true; btns.forEach((b) => (b.disabled = true));
@@ -335,36 +379,36 @@ SCENES.machine = (st, ui) => {
 
 // ---- Lecture 1: a ball rolls past if / elif / else gates ----
 SCENES.gates = (st, ui) => {
-  const gates = [
-    { cond: "score >= 90", out: "A", test: (s) => s >= 90, color: C.green },
-    { cond: "score >= 80", out: "B", test: (s) => s >= 80, color: C.cyan },
-    { cond: "score >= 70", out: "C", test: (s) => s >= 70, color: C.violet },
-    { cond: "else", out: "F", test: () => true, color: C.red },
-  ];
+  const COLORS = { A: C.green, B: C.cyan, C: C.violet, F: C.red };
+  // Same three gates with a different operator or order. Challenges use the tricky ones.
+  const VARIANTS = {
+    normal: [[">=", 90, "A"], [">=", 80, "B"], [">=", 70, "C"]],
+    strict: [[">", 90, "A"], [">", 80, "B"], [">", 70, "C"]],
+    reversed: [[">=", 70, "C"], [">=", 80, "B"], [">=", 90, "A"]],
+  };
   const xs = [-4.5, -1.5, 1.5, 4.5];
   st.add(at(box(13, 0.15, 1.2, "#25324f"), 0, 0.075, 0));
-  gates.forEach((g, i) => {
-    const x = xs[i];
+  const gates = xs.map((x) => {
+    const g = {};
     const frame = new THREE.Group();
     const post = mat(C.steel);
     frame.add(at(box(0.15, 1.8, 0.15, post), 0, 0.9, -0.7), at(box(0.15, 1.8, 0.15, post), 0, 0.9, 0.7));
     g.bar = box(0.2, 0.2, 1.6, C.steel);
     g.bar.position.y = 1.8;
     frame.add(g.bar);
-    g.tag = at(label(i === 3 ? "else:" : (i === 0 ? "if " : "elif ") + g.cond + ":", { mono: true, h: 0.3 }), 0, 2.4, 0);
+    g.tag = at(label(" ", { mono: true, h: 0.3 }), 0, 2.4, 0);
     frame.add(g.tag);
-    // a ramp to the bin in front of the gate
-    const ramp = box(0.9, 0.08, 2.0, "#2a3a5c");
-    ramp.position.set(0.0, 0.12, 1.6);
-    frame.add(ramp);
-    g.bin = new THREE.Group();
-    const bm = mat(g.color, { transparent: true, opacity: 0.85 });
-    g.bin.add(at(box(1.4, 0.1, 1.2, bm), 0, 0.05, 0), at(box(1.4, 0.7, 0.1, bm), 0, 0.35, 0.55), at(box(0.1, 0.7, 1.2, bm), 0.65, 0.35, 0), at(box(0.1, 0.7, 1.2, bm), -0.65, 0.35, 0));
-    g.bin.add(at(label(g.out, { bold: true, size: 64, h: 0.5, color: g.color }), 0, 1.1, 0.4));
-    g.bin.position.set(0, 0, 3.1);
-    frame.add(g.bin);
+    frame.add(at(box(0.9, 0.08, 2.0, "#2a3a5c"), 0, 0.12, 1.6));
+    const bin = new THREE.Group();
+    g.bm = mat(C.steel, { transparent: true, opacity: 0.85 });
+    bin.add(at(box(1.4, 0.1, 1.2, g.bm), 0, 0.05, 0), at(box(1.4, 0.7, 0.1, g.bm), 0, 0.35, 0.55), at(box(0.1, 0.7, 1.2, g.bm), 0.65, 0.35, 0), at(box(0.1, 0.7, 1.2, g.bm), -0.65, 0.35, 0));
+    g.binTag = at(label(" ", { bold: true, size: 64, h: 0.5 }), 0, 1.1, 0.4);
+    bin.add(g.binTag);
+    bin.position.set(0, 0, 3.1);
+    frame.add(bin);
     frame.position.x = x;
     st.add(frame);
+    return g;
   });
   const ball = new THREE.Mesh(new THREE.SphereGeometry(0.38, 32, 16), mat(C.amber, { emissive: C.amber, emissiveIntensity: 0.2 }));
   ball.castShadow = true;
@@ -375,34 +419,82 @@ SCENES.gates = (st, ui) => {
   const start = [-6.4, 0.53, 0];
   ball.position.set(...start);
 
-  const hi = ui.code(["if score >= 90:", '    print("A")', "elif score >= 80:", '    print("B")', "elif score >= 70:", '    print("C")', "else:", '    print("F")']);
-  const r = ui.range(0, 100, 85, "score =");
-  setText(btag, r.value);
-  r.addEventListener("input", () => setText(btag, r.value));
-  ui.say("门从左到右检查。进了一扇门，后面的门就不再看。");
+  let hi = () => {};
+  let variant = null;
+  function setVariant(name) {
+    if (variant === name) return;
+    variant = name;
+    const rows = VARIANTS[name];
+    const lines = [];
+    gates.forEach((g, i) => {
+      const row = rows[i];
+      if (row) {
+        const [op, t, out] = row;
+        g.cond = `score ${op} ${t}`;
+        g.out = out;
+        g.test = (s) => (op === ">" ? s > t : s >= t);
+        setText(g.tag, `${i ? "elif" : "if"} ${g.cond}:`);
+        lines.push(`${i ? "elif" : "if"} ${g.cond}:`, `    print("${out}")`);
+      } else {
+        g.cond = "else"; g.out = "F"; g.test = () => true;
+        setText(g.tag, "else:");
+        lines.push("else:", '    print("F")');
+      }
+      g.bm.color.set(COLORS[g.out]);
+      setText(g.binTag, g.out, { color: COLORS[g.out] });
+    });
+    hi = ui.code(lines);
+  }
+  setVariant("normal");
 
-  ui.button("▶ 放球", async () => {
-    const s = +r.value;
+  // Roll the ball with score s through the current gates; returns the bin letter it lands in.
+  async function play(s, quiet = false) {
     setText(btag, s);
     gates.forEach((g) => g.bar.material.color.set(C.steel));
     ball.position.set(...start);
     for (let i = 0; i < gates.length; i++) {
       const g = gates[i];
       hi(i * 2);
-      await st.move(ball, [xs[i], 0.53, 0], 650);
+      await st.move(ball, [xs[i], 0.53, 0], 600);
       const ok = g.test(s);
       g.bar.material.color.set(ok ? C.green : C.red);
-      ui.say(i === 3 ? "前面全是 False，所以走 else。" : `${g.cond.replace("score", s)}  →  ${ok ? "True，进门！" : "False，继续往右"}`, ok ? "ok" : "");
-      await st.sleep(450);
+      if (!quiet) ui.say(i === 3 ? "前面全是 False，所以走 else。" : `${g.cond.replace("score", s)}  →  ${ok ? "True，进门！" : "False，继续往右"}`, ok ? "ok" : "");
+      await st.sleep(400);
       if (ok) {
         hi(i * 2 + 1);
         await st.move(ball, [xs[i], 0.53, 1.0], 300);
-        await st.move(ball, [xs[i], 0.5, 3.1], 650, 0.4);
-        ui.say(`打印 ${g.out}。${i < 3 ? "后面的门根本没检查。" : ""}`, "ok");
-        return;
+        await st.move(ball, [xs[i], 0.5, 3.1], 600, 0.4);
+        if (!quiet) ui.say(`打印 ${g.out}。${i < 3 ? "后面的门根本没检查。" : ""}`, "ok");
+        return g.out;
       }
     }
-  }, "primary");
+  }
+
+  const r = ui.range(0, 100, 85, "score =");
+  setText(btag, r.value);
+  r.addEventListener("input", () => { setVariant("normal"); setText(btag, r.value); });
+  ui.say("门从左到右检查。进了一扇门，后面的门就不再看。");
+  ui.button("▶ 放球", async () => { setVariant("normal"); await play(+r.value); }, "primary");
+
+  const pick = (a) => a[Math.floor(Math.random() * a.length)];
+  ui.challenge(() => {
+    const kind = pick(["normal", "normal", "strict", "reversed"]);
+    const s = kind === "normal" ? pick([90, 89, 80, 79, 70, 69, 100, 0, 75]) : kind === "strict" ? pick([90, 80, 70, 91]) : pick([95, 100, 85, 90]);
+    setVariant(kind);
+    setText(btag, s);
+    ball.position.set(...start);
+    gates.forEach((g) => g.bar.material.color.set(C.steel));
+    const hint = kind === "strict" ? "（注意：这次的门用的是 >，不是 >=）" : kind === "reversed" ? "（注意：这次门的顺序被人改了）" : "";
+    return {
+      ask: `score = ${s}，球会进哪个筐？${hint}`,
+      options: ["A", "B", "C", "F"],
+      play: () => play(s, true),
+      why: (ans) => kind === "reversed" && s >= 80
+        ? `第一扇门 score >= 70 就已经是 True，球直接进 ${ans}。顺序写反了，A 和 B 永远到不了。`
+        : kind === "strict" && s % 10 === 0 ? `${s} > ${s} 是 False（> 不包含等于），所以继续往右。`
+        : `从左到右，第一个为 True 的条件决定结果：打印 ${ans}。`,
+    };
+  });
 };
 
 // ---- Lecture 2: nested loops build a brick wall ----
@@ -925,7 +1017,10 @@ export function mount(el, key) {
   status.className = "sstatus";
   const code = document.createElement("pre");
   code.className = "scode";
-  el.append(wrap, status, bar, code);
+  const chal = document.createElement("div");
+  chal.className = "schallenge";
+  chal.hidden = true;
+  el.append(wrap, status, chal, bar, code);
   const views = {
     regex: { cam: [0, 5, 10], target: [0, 1.6, 0], fitWidth: 14 },
     bricks: { cam: [0, 4.5, 11], target: [0, 2.6, 0], fitWidth: 9 },
@@ -934,7 +1029,7 @@ export function mount(el, key) {
     conveyor: { cam: [0, 4.5, 10], target: [0, 1.8, 0], fitWidth: 14 },
   };
   const st = createStage(wrap, views[key] || {});
-  const ui = makeUI(bar, code, status);
+  const ui = makeUI(bar, code, status, chal);
   SCENES[key](st, ui);
   return () => st.dispose();
 }
