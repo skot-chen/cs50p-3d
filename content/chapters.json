@@ -1,0 +1,646 @@
+{
+"JP7ITIXGpHk": [
+[
+0,
+"Introduction"
+],
+[
+24,
+"hello.py"
+],
+[
+199,
+"Command-line Interface"
+],
+[
+240,
+"Python Interpreter"
+],
+[
+306,
+"Functions, Arguments, Side Effects"
+],
+[
+455,
+"Bugs and Debugging"
+],
+[
+594,
+"VS Code and Integrated Development Environments (IDEs)"
+],
+[
+736,
+"Return Values and Variables"
+],
+[
+1196,
+"Comments and Pseudocode"
+],
+[
+1505,
+"Multiple Function Arguments"
+],
+[
+1861,
+"Named Parameters"
+],
+[
+2448,
+"Escaping Characters"
+],
+[
+2590,
+"f-Strings"
+],
+[
+2704,
+"String Methods"
+],
+[
+3283,
+"Style"
+],
+[
+3470,
+"split"
+],
+[
+3575,
+"Integers and Operators"
+],
+[
+3793,
+"calculator.py"
+],
+[
+3985,
+"Type Conversion"
+],
+[
+4476,
+"Floating Point Values"
+],
+[
+4758,
+"Numeric Formatting"
+],
+[
+4967,
+"Division"
+],
+[
+5174,
+"Defining Functions"
+],
+[
+5941,
+"Scope"
+],
+[
+6077,
+"Return Values"
+],
+[
+6311,
+"Conclusion"
+]
+],
+"_b6NgY_pMdw": [
+[
+0,
+"Introduction"
+],
+[
+24,
+"Conditionals"
+],
+[
+167,
+"if"
+],
+[
+596,
+"elif"
+],
+[
+906,
+"else"
+],
+[
+1110,
+"or"
+],
+[
+1326,
+"Not Equal"
+],
+[
+1457,
+"Indentation, Colons"
+],
+[
+1513,
+"and"
+],
+[
+1728,
+"Chaining Comparison Operators"
+],
+[
+1940,
+"Bugs"
+],
+[
+2056,
+"Modulo"
+],
+[
+2400,
+"Boolean"
+],
+[
+2650,
+"Pythonic Expressions"
+],
+[
+2895,
+"match"
+],
+[
+3341,
+"Conclusion"
+]
+],
+"-7xg8pGcP6w": [
+[
+0,
+"Introduction"
+],
+[
+24,
+"Loops"
+],
+[
+50,
+"cat.py"
+],
+[
+204,
+"while"
+],
+[
+981,
+"for"
+],
+[
+1620,
+"Validating Input"
+],
+[
+2099,
+"Iteration with Lists"
+],
+[
+2436,
+"len"
+],
+[
+2747,
+"Dictionaries"
+],
+[
+3422,
+"Lists of Dictionaries"
+],
+[
+3902,
+"Nested Loops"
+],
+[
+4817,
+"Conclusion"
+]
+],
+"LW7g1169v7w": [
+[
+0,
+"Introduction"
+],
+[
+24,
+"Exceptions"
+],
+[
+52,
+"SyntaxError"
+],
+[
+209,
+"ValueError"
+],
+[
+532,
+"try, except"
+],
+[
+858,
+"NameError"
+],
+[
+1115,
+"else"
+],
+[
+1360,
+"Reprompting, break"
+],
+[
+1790,
+"get_int"
+],
+[
+2148,
+"pass"
+],
+[
+2492,
+"Function Arguments"
+],
+[
+2632,
+"Conclusion"
+]
+],
+"MztLZWibctI": [
+[
+0,
+"Introduction"
+],
+[
+24,
+"Libraries"
+],
+[
+54,
+"Modules"
+],
+[
+193,
+"import"
+],
+[
+455,
+"from"
+],
+[
+683,
+"randint, shuffle"
+],
+[
+1021,
+"statistics"
+],
+[
+1153,
+"Command-line Arguments, sys"
+],
+[
+1979,
+"sys.exit"
+],
+[
+2455,
+"Slices"
+],
+[
+2681,
+"Packages, PyPI, pip"
+],
+[
+2830,
+"cowsay"
+],
+[
+3206,
+"APIs, requests, JSON"
+],
+[
+4206,
+"Custom Libraries"
+]
+],
+"tIrcxwLqzjQ": [
+[
+0,
+"Introduction"
+],
+[
+24,
+"Unit Tests"
+],
+[
+75,
+"Testing calculator.py"
+],
+[
+620,
+"assert"
+],
+[
+738,
+"AssertionError"
+],
+[
+1018,
+"pytest"
+],
+[
+1718,
+"Categories of Tests"
+],
+[
+2153,
+"Testing for Exceptions"
+],
+[
+2293,
+"Side Effects and Testing"
+],
+[
+2874,
+"Collections of Tests"
+],
+[
+3016,
+"Conclusion"
+]
+],
+"KD-Yoel6EVQ": [
+[
+0,
+"Introduction"
+],
+[
+24,
+"File I/O"
+],
+[
+77,
+"lists"
+],
+[
+354,
+"open"
+],
+[
+835,
+"with"
+],
+[
+1299,
+"sorted"
+],
+[
+1771,
+"Comma-Separated Values"
+],
+[
+2797,
+"Sort Keys"
+],
+[
+3181,
+"Lambda Functions"
+],
+[
+3433,
+"csv Library"
+],
+[
+3737,
+"csv.reader"
+],
+[
+4069,
+"csv.DictReader"
+],
+[
+4445,
+"csv.writer"
+],
+[
+4588,
+"csv.DictWriter"
+],
+[
+4980,
+"Images, PIL library"
+],
+[
+5502,
+"Conclusion"
+]
+],
+"hy3sd9MOAcc": [
+[
+0,
+"Introduction"
+],
+[
+24,
+"Regular Expressions"
+],
+[
+76,
+"Validation without Regular Expressions"
+],
+[
+645,
+"re Library"
+],
+[
+844,
+"Regular Expression Patterns"
+],
+[
+1989,
+"Matching Start and End"
+],
+[
+2338,
+"Sets of Characters"
+],
+[
+2958,
+"Character Classes"
+],
+[
+3458,
+"Flags"
+],
+[
+3640,
+"Groups"
+],
+[
+4206,
+"Email Address Validation"
+],
+[
+4334,
+"match, fullmatch"
+],
+[
+4427,
+"format.py"
+],
+[
+4840,
+"Capturing Groups"
+],
+[
+5397,
+"Walrus Operator"
+],
+[
+5555,
+"Extracting from Strings"
+],
+[
+6031,
+"re.sub"
+],
+[
+6804,
+"re.search"
+],
+[
+7437,
+"Conclusion"
+]
+],
+"e4fwY9ZsxPw": [
+[
+0,
+"Introduction"
+],
+[
+24,
+"Object-Oriented Programming"
+],
+[
+60,
+"Tuples"
+],
+[
+1119,
+"Dictionaries"
+],
+[
+1605,
+"Classes and Objects"
+],
+[
+2358,
+"Instance Methods"
+],
+[
+3589,
+"Validating Attributes"
+],
+[
+3865,
+"The String Method"
+],
+[
+4273,
+"Custom Methods"
+],
+[
+4533,
+"Properties, Getters and Setters"
+],
+[
+5929,
+"Types and Classes"
+],
+[
+6443,
+"Class Methods"
+],
+[
+8249,
+"Inheritance"
+],
+[
+9119,
+"Operator Overloading"
+]
+],
+"6pgodt1mezg": [
+[
+0,
+"Introduction"
+],
+[
+24,
+"Et Cetera"
+],
+[
+105,
+"set"
+],
+[
+457,
+"global"
+],
+[
+1420,
+"Constants"
+],
+[
+1757,
+"Type Hints, mypy"
+],
+[
+2858,
+"Docstrings"
+],
+[
+3294,
+"argparse"
+],
+[
+4222,
+"Unpacking"
+],
+[
+5845,
+"map"
+],
+[
+6397,
+"List Comprehensions"
+],
+[
+6750,
+"filter"
+],
+[
+7114,
+"Dictionary Comprehensions"
+],
+[
+7520,
+"enumerate"
+],
+[
+7689,
+"Generators, Iterators, yield"
+],
+[
+8583,
+"Conclusion"
+]
+]
+}
